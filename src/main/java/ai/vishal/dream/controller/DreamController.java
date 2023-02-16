@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import ai.vishal.dream.model.mongo.User;
 import ai.vishal.dream.model.request.DreamDTO;
 import ai.vishal.dream.model.request.GPTRequest;
+import ai.vishal.dream.repository.UserRepo;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -19,6 +22,9 @@ public class DreamController {
 
     @Autowired
     WebClient.Builder webClientBuilder;
+
+    @Autowired
+    UserRepo userRepo;
 
     @PostMapping("/dream")
     public Object analyseDream(DreamDTO dream) {
@@ -35,5 +41,10 @@ public class DreamController {
                 .retrieve()
                 .bodyToMono(Object.class)
                 .block();
+    }
+
+    @PostMapping("/subscribe")
+    public void subscribeEMail( @RequestBody User user) {
+        userRepo.save(user);
     }
 }
